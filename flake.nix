@@ -10,7 +10,7 @@
     parts,
   }:
     parts.lib.mkFlake {inherit self;} {
-      imports = [./devpart.nix];
+      imports = [./devpart.nix ./lspart.nix ./packages/idris2.nix];
       systems = ["x86_64-linux"];
     };
 }
