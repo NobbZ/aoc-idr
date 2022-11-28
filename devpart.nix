@@ -12,8 +12,7 @@ in {
     devShells.default = pkgs.mkShell {
       packages = attrValues {
         inherit (inputs'.nobbz.packages) nil alejandra;
-        inherit (self'.packages) idris-lsp;
-        inherit (pkgs) idris2;
+        inherit (self'.packages) idris-lsp idris2;
       };
     };
   };
