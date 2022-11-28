@@ -70,7 +70,7 @@
       pname = "idris2";
       inherit (self'.packages.idris2-bootstrap) version src prePatch makeFlags checkInputs;
 
-      nativeBuildInputs = [self'.packages.idris2-bootstrap];
+      nativeBuildInputs = [pkgs.makeWrapper self'.packages.idris2-bootstrap];
       buildInputs = [pkgs.gmp];
 
       buildFlags = ["all"];
@@ -78,10 +78,10 @@
 
       postInstall =
         ''
-          set -ex
-          IDRIS2_PREFIX=$out make install-with-src-libs
-          IDRIS2_PREFIX=$out make install-with-src-api
-          set +ex
+          make install-with-src-libs PREFIX=$out
+          HOME=$out make install-with-src-api
+
+          mv $out/.idris2/idris2-0.5.1/* $out/idris2-0.5.1/
         ''
         + self'.packages.idris2-bootstrap.postInstall;
     };
