@@ -1,29 +1,28 @@
 module Aoc.Main
 
-import Control.App
-import Control.App.Console
+import Data.Fin
 
-import Aoc.Y2015.D01
+import Aoc.Data.LazyList
 
-data Counter : Type where
+import Aoc.Y2015 as Y15
 
 Interpolation Int where
     interpolate = show
 
--- hello : Console es => App es ()
--- hello = putStrLn "Hello, World!" 
+Interpolation Nat where
+    interpolate = show
 
-hello : (Console es, State Counter Int es) => App es ()
-hello = do c <- get Counter
-           put Counter (c + 1)
-           putStrLn "Hello, counting world"
-           c <- get Counter
-           putStrLn ("Counter \{c}")
+unwrap : (a, b, c, IO d) -> IO (a, b, c, d)
+unwrap (a, b, c, d) = do
+  d' <- d
+  pure (a, b, c, d')
 
-
--- main : HasIO io => IO ()
--- main = do n <- part1
---           putStrLn $ show n
+run : LazyList  (Nat, Nat, Nat, IO Int) -> IO ()
+run []       = pure ()
+run (x :: xs) = do
+    (y, d, p, s) <- unwrap x
+    putStrLn "\{y}-\{d}-\{p}: \{s}"
+    run xs
 
 main : IO ()
-main = putStrLn . show $ f "()"
+main = run Y15.list

@@ -3,26 +3,48 @@ module Aoc.Y2015.D01
 import System.File
 import Data.String
 
+-- TODO: Create a "view" that shows the string as `List Paren`
+
+callWithInput : (String -> Int) -> String -> IO Int
+callWithInput f file = do
+  fileOrErr <- readFile file
+  case fileOrErr of
+    Right str => pure $ f str
+    Left err => do
+      putStrLn $ show err
+      pure 0
+
+inc : Int -> Int
+inc = (+) 1
+
+dec : Int -> Int
+dec n = n - 1
+
+part1FromString : Int -> String -> Int
+part1FromString n contents with (asList contents)
+  part1FromString n ""             | []         = n
+  part1FromString n (strCons _ cs) | ('(' :: _) = part1FromString (inc n) cs
+  part1FromString n (strCons _ cs) | (')' :: _) = part1FromString (dec n) cs
+  part1FromString n (strCons _ cs) | (_   :: _) = part1FromString n       cs
+
+part1FromFile : String -> IO Int
+part1FromFile file = callWithInput (part1FromString 0) file
+
 export
-f : String -> Nat
-f s with (asList s)
-  f "" | [] = ?fh_0
-  f (strCons _ _) | (c :: x) = ?fh_1
+part1 : IO Int
+part1 = part1FromFile "data/2015/01.txt"
 
--- part1FromString : String -> Nat
--- part1FromString contents with (asList contents)
---   _ | [] = ?foo_0
---   _ | (c :: x) = ?foo_1
+part2FromString : Nat -> String -> Nat
+part2FromString floor contents with (asList contents)
+  part2FromString floor      ""             | []         = 0
+  part2FromString 0          (strCons _ cs) | (')' :: _) = 0
+  part2FromString (S floor') (strCons _ cs) | (')' :: _) = S $ part2FromString floor' cs
+  part2FromString floor      (strCons _ cs) | ('(' :: _) = S $ part2FromString (S floor) cs
+  part2FromString floor      (strCons _ cs) | (_   :: _) = part2FromString floor cs
 
--- part1FromFile : HasIO io => String -> io Nat
--- part1FromFile file = do contents <- readFile file
---                         case contents of
---                             Left error => do putStrLn $ show error
---                                              pure 0
---                             Right x => pure $ part1FromString x
+part2FromFile : String -> IO Int
+part2FromFile file = callWithInput (cast . S . part2FromString 0) file
 
-
--- export
--- part1 : HasIO io => io Nat
--- part1 = part1FromFile "data/2015/01.txt"
-
+export
+part2 : IO Int
+part2 = part2FromFile "data/2015/01.txt"

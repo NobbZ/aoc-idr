@@ -13,7 +13,7 @@ authors = "Norbert Melzer"
 -- langversion
 
 -- packages to add to search path
--- depends =
+depends = prelude
 
 -- modules to install
 -- modules =
