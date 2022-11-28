@@ -9,7 +9,10 @@ in {
     formatter = inputs'.nobbz.formatter;
 
     devShells.default = pkgs.mkShell {
-      packages = attrValues {inherit (inputs'.nobbz.packages) nil alejandra;};
+      packages = attrValues {
+        inherit (inputs'.nobbz.packages) nil alejandra;
+        inherit (pkgs) idris2;
+      };
     };
   };
 }
