@@ -2,6 +2,7 @@ _: let
   inherit (builtins) attrValues;
 in {
   perSystem = {
+    self',
     pkgs,
     inputs',
     ...
@@ -11,6 +12,7 @@ in {
     devShells.default = pkgs.mkShell {
       packages = attrValues {
         inherit (inputs'.nobbz.packages) nil alejandra;
+        inherit (self'.packages) idris-lsp;
         inherit (pkgs) idris2;
       };
     };
