@@ -20,6 +20,9 @@ inc = (+) 1
 dec : Int -> Int
 dec n = n - 1
 
+path : String
+path = "data/2015/01.txt"
+
 part1FromString : Int -> String -> Int
 part1FromString n contents with (asList contents)
   part1FromString n ""             | []         = n
@@ -32,7 +35,7 @@ part1FromFile file = callWithInput (part1FromString 0) file
 
 export
 part1 : IO Int
-part1 = part1FromFile "data/2015/01.txt"
+part1 = part1FromFile path
 
 part2FromString : Nat -> String -> Nat
 part2FromString floor contents with (asList contents)
@@ -47,4 +50,4 @@ part2FromFile file = callWithInput (cast . S . part2FromString 0) file
 
 export
 part2 : IO Int
-part2 = part2FromFile "data/2015/01.txt"
+part2 = part2FromFile path
