@@ -7,6 +7,13 @@ import System.Clock
 import Aoc.Data.LazyList
 
 import Aoc.Y2015 as Y15
+import Aoc.Y2016 as Y16
+import Aoc.Y2017 as Y17
+import Aoc.Y2018 as Y18
+import Aoc.Y2019 as Y19
+import Aoc.Y2020 as Y20
+import Aoc.Y2021 as Y21
+import Aoc.Y2022 as Y22
 
 Interpolation Int where
     interpolate = show
@@ -48,4 +55,4 @@ run (x :: xs) = do
     run xs
 
 main : IO ()
-main = run Y15.list
+main = run (Y15.list ++ Y16.list ++ Y17.list ++ Y18.list ++ Y19.list ++ Y20.list ++ Y21.list ++ Y22.list)

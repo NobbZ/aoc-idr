@@ -43,7 +43,7 @@ part2FromString floor contents with (asList contents)
   part2FromString 0          (strCons _ cs) | (')' :: _) = 0
   part2FromString (S floor') (strCons _ cs) | (')' :: _) = S $ part2FromString floor' cs
   part2FromString floor      (strCons _ cs) | ('(' :: _) = S $ part2FromString (S floor) cs
-  part2FromString floor      (strCons _ cs) | (_   :: _) = part2FromString floor cs
+  part2FromString floor      (strCons _ cs) | (_   :: _) =     part2FromString floor cs
 
 part2FromFile : String -> IO Int
 part2FromFile file = callWithInput (cast . S . part2FromString 0) file
