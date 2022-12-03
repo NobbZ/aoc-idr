@@ -1,7 +1,7 @@
 module Aoc.Y2018
 
-import Aoc.Data.LazyList
+import Aoc.Data.Solutions
 
 export
-list : LazyList (Nat, Nat, Nat, IO Int)
+list : Solutions
 list = []

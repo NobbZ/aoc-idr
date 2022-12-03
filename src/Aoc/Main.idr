@@ -4,7 +4,7 @@ import Data.Fin
 import Data.String
 import System.Clock
 
-import Aoc.Data.LazyList
+import Aoc.Data.Solutions
 
 import Aoc.Y2015 as Y15
 import Aoc.Y2016 as Y16
@@ -39,17 +39,18 @@ Interpolation (Clock a) where
         _ | ((0, s), (ms, _, _)) = "\{s}.\{padLeft 3 '0' "\{ms}"}"
         _ | ((m, s), _)          = "\{m}:\{s}"
 
-unwrap : (a, b, c, IO d) -> IO (a, b, c, d)
-unwrap (a, b, c, d) = d >>= (\d => pure (a, b, c, d))
+unwrap : (a, b, c, (ty : Type ** (IO ty, ty -> Int, ty -> String)))
+   -> IO (a, b, c, (ty : Type ** (   ty, ty -> Int, ty -> String)))
+unwrap (a, b, c, (typ ** (d, int, str))) = pure (a, b, c, (typ ** (!d, int, str)))
 
-run : LazyList  (Nat, Nat, Nat, IO Int) -> IO ()
+run : Solutions -> IO ()
 run []       = pure ()
 run (x :: xs) = do
     clock <- clockTime Process
-    (y, d, p, s) <- unwrap x
+    (y, d, p, (_ ** (sol, int, str))) <- unwrap x
     clock' <- clockTime Process
     let time = timeDifference clock' clock
-    putStrLn "\{y}-\{padLeft 2 '0' $ interpolate d}-\{p}: \{s} (\{time})"
+    putStrLn "\{y}-\{padLeft 2 '0' $ interpolate d}-\{p}: \{int sol} (\{time})"
     run xs
 
 main : IO ()

@@ -3,16 +3,27 @@ module Aoc.Y2015.D01
 import System.File
 import Data.String
 
+import Aoc.Data.Solutions
+
 -- TODO: Create a "view" that shows the string as `List Paren`
 
-callWithInput : (String -> Int) -> String -> IO Int
+interface Default a where
+  default' : a
+
+Default Nat where
+  default' = 0
+
+Default Int where
+  default' = 0
+
+callWithInput : (Default a) => (String -> a) -> String -> IO a
 callWithInput f file = do
   fileOrErr <- readFile file
   case fileOrErr of
     Right str => pure $ f str
     Left err => do
       putStrLn $ show err
-      pure 0
+      pure default'
 
 inc : Int -> Int
 inc = (+) 1
@@ -34,8 +45,8 @@ part1FromFile : String -> IO Int
 part1FromFile file = callWithInput (part1FromString 0) file
 
 export
-part1 : IO Int
-part1 = part1FromFile path
+part1 : Solution
+part1 = (_ ** (part1FromFile path, id, show))
 
 part2FromString : Nat -> String -> Nat
 part2FromString floor contents with (asList contents)
@@ -45,9 +56,9 @@ part2FromString floor contents with (asList contents)
   part2FromString floor      (strCons _ cs) | ('(' :: _) = S $ part2FromString (S floor) cs
   part2FromString floor      (strCons _ cs) | (_   :: _) =     part2FromString floor cs
 
-part2FromFile : String -> IO Int
-part2FromFile file = callWithInput (cast . S . part2FromString 0) file
+part2FromFile : String -> IO Nat
+part2FromFile = callWithInput $ S . part2FromString 0
 
 export
-part2 : IO Int
-part2 = part2FromFile path
+part2 : Solution
+part2 = (_ ** (part2FromFile path, cast, show))
