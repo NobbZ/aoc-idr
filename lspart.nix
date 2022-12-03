@@ -28,8 +28,8 @@ _: {
       name = "${owner}-${repo}-${rev}";
       owner = "idris-community";
       repo = "idris2-lsp";
-      rev = "dc7d3e5dc2ba0951014729fb32001ac30534f769";
-      hash = "sha256-HhpnuzjlBRE+/QlOgYslaOTqtVp8zwvjtGJvUQX0Gd0=";
+      rev = "a2603b83124818eedca072269e8883cf8b7a3223";
+      hash = "sha256-zVoo2YGv/96zF0W1mhODsZdkTS99FNEbTUQ6QMa5h98=";
       fetchSubmodules = true;
     };
   };
