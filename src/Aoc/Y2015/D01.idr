@@ -5,7 +5,20 @@ import Data.String
 
 import Aoc.Data.Solutions
 
--- TODO: Create a "view" that shows the string as `List Paren`
+import Aoc.Y2015.D01.Input
+
+data Paren = Open | Close
+
+data AsParens : String -> Type where
+  Nil : AsParens ""
+  (::) : (p : Paren) -> {str : String} -> Lazy (AsParens str) -> AsParens (strCons c str)
+
+asParens : (str : String) -> AsParens str
+asParens str with (asList str)
+  asParens ""                | []       = []
+  asParens (strCons '(' str) | ('(' :: xs) = Open      :: asParens str
+  asParens (strCons ')' str) | (')' :: xs) = Close     :: asParens str
+  asParens (strCons _   str) | (_   :: xs) = believe_me $ asParens str
 
 interface Default a where
   default' : a
@@ -35,30 +48,28 @@ path : String
 path = "data/2015/01.txt"
 
 part1FromString : Int -> String -> Int
-part1FromString n contents with (asList contents)
-  part1FromString n ""             | []         = n
-  part1FromString n (strCons _ cs) | ('(' :: _) = part1FromString (inc n) cs
-  part1FromString n (strCons _ cs) | (')' :: _) = part1FromString (dec n) cs
-  part1FromString n (strCons _ cs) | (_   :: _) = part1FromString n       cs
+part1FromString n contents with (asParens contents)
+  part1FromString n ""             | []          = n
+  part1FromString n (strCons _ cs) | (Open  :: _) = part1FromString (inc n) cs
+  part1FromString n (strCons _ cs) | (Close :: _) = part1FromString (dec n) cs
 
-part1FromFile : String -> IO Int
-part1FromFile file = callWithInput (part1FromString 0) file
+part1FromFile : IO Int
+part1FromFile = pure $ part1FromString 0 input
 
 export
 part1 : Solution
-part1 = (_ ** (part1FromFile path, id, show))
+part1 = (_ ** (part1FromFile, id, show))
 
 part2FromString : Nat -> String -> Nat
-part2FromString floor contents with (asList contents)
-  part2FromString floor      ""             | []         = 0
-  part2FromString 0          (strCons _ cs) | (')' :: _) = 0
-  part2FromString (S floor') (strCons _ cs) | (')' :: _) = S $ part2FromString floor' cs
-  part2FromString floor      (strCons _ cs) | ('(' :: _) = S $ part2FromString (S floor) cs
-  part2FromString floor      (strCons _ cs) | (_   :: _) =     part2FromString floor cs
+part2FromString floor contents with (asParens contents)
+  part2FromString floor      ""             | []           = 0
+  part2FromString 0          (strCons _ cs) | (Close :: _) = 0
+  part2FromString (S floor') (strCons _ cs) | (Close :: _) = S $ part2FromString    floor' cs
+  part2FromString floor      (strCons _ cs) | (Open  :: _) = S $ part2FromString (S floor) cs
 
-part2FromFile : String -> IO Nat
-part2FromFile = callWithInput $ S . part2FromString 0
+part2FromFile : IO Nat
+part2FromFile = pure . S $ part2FromString 0 input
 
 export
 part2 : Solution
-part2 = (_ ** (part2FromFile path, cast, show))
+part2 = (_ ** (part2FromFile, cast, show))
