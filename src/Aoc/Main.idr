@@ -32,17 +32,15 @@ fractions' s = (s `div` 60, s `mod` 60)
 
 Interpolation (Clock a) where
     interpolate (MkClock 0 ns') with (fractions ns')
-        _ | (0, 0, ns)  = "\{ns}ns"
-        _ | (0, us, ns) = "\{us}µs \{ns}ns"
-        _ | (ms, us, _) = "\{ms}ms \{us}µs"
+        _ | (0,  0,  ns) = "\{ns}ns"
+        _ | (0,  us, ns) = "\{us}µs \{ns}ns"
+        _ | (ms, us, _)  = "\{ms}ms \{us}µs"
     interpolate c@(MkClock s' ns') with (fractions' s', fractions ns')
         _ | ((0, s), (ms, _, _)) = "\{s}.\{padLeft 3 '0' "\{ms}"}"
-        _ | ((m, s), _) = "\{m}:\{s}"
+        _ | ((m, s), _)          = "\{m}:\{s}"
 
 unwrap : (a, b, c, IO d) -> IO (a, b, c, d)
-unwrap (a, b, c, d) = do
-  d' <- d
-  pure (a, b, c, d')
+unwrap (a, b, c, d) = d >>= (\d => pure (a, b, c, d))
 
 run : LazyList  (Nat, Nat, Nat, IO Int) -> IO ()
 run []       = pure ()
