@@ -10,7 +10,16 @@
     parts,
   }:
     parts.lib.mkFlake {inherit self;} {
-      imports = [./devpart.nix ./lspart.nix ./packages/idris2.nix];
+      imports = [./devpart.nix ./packages];
       systems = ["x86_64-linux"];
+
+      perSystem = {
+        pkgs,
+        self',
+        ...
+      }: {
+        legacyPackages.callPackages = pkgs.lib.callPackagesWith (pkgs // {inherit (self'.packages) idris2-bootstrap idris2 idris2-lsp idris-lsp-source;});
+        legacyPackages.callPackage = pkgs.lib.callPackageWith (pkgs // {inherit (self'.packages) idris2-bootstrap idris2 idris2-lsp idris-lsp-source;});
+      };
     };
 }

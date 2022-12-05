@@ -7,9 +7,9 @@ _: {
   }: let
     inherit (builtins) attrValues;
   in {
-    packages.idris-lsp = pkgs.stdenv.mkDerivation (self: {
+    packages.idris2-lsp = pkgs.stdenv.mkDerivation (self: {
       pname = "idris2-lsp";
-      version = "2022-11-27-unstable";
+      version = "2022-11-29-unstable";
 
       nativeBuildInputs = attrValues {inherit (self'.packages) idris2;};
       buildInputs = attrValues {inherit (self'.packages) idris2;};
@@ -22,6 +22,8 @@ _: {
         idris2 --list-packages
         make build
       '';
+
+      installTargets = "install-only";
     });
 
     packages.idris-lsp-source = pkgs.fetchFromGitHub rec {

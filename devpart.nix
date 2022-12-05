@@ -12,14 +12,17 @@ in {
     devShells.default = pkgs.mkShell {
       packages = attrValues {
         inherit (inputs'.nobbz.packages) nil alejandra;
-        inherit (self'.packages) idris-lsp idris2;
+        inherit (self'.packages) idris2-lsp idris2;
       };
 
-      IDRIS2_PACKAGE_PATH = builtins.concatStringsSep ":" (let inherit (self'.packages.idris2) pname version; name = "${pname}-${version}"; in [
-          "\\$HOME/.nix-profile/lib/${name}"
-          "/run/current-system/sw/lib/${name}"
-          "${self'.packages.idris2}/${name}"
-        ]);
+      IDRIS2_PACKAGE_PATH = builtins.concatStringsSep ":" (let
+        inherit (self'.packages.idris2) pname version;
+        name = "${pname}-${version}";
+      in [
+        "\\$HOME/.nix-profile/lib/${name}"
+        "/run/current-system/sw/lib/${name}"
+        "${self'.packages.idris2}/${name}"
+      ]);
     };
   };
 }
